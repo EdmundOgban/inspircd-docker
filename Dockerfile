@@ -3,8 +3,9 @@ FROM alpine:3.11 as builder
 LABEL maintainer1="Adam <adam@anope.org>" \
       maintainer2="Sheogorath <sheogorath@shivering-isles.com>"
 
-ARG VERSION=3.7.0-p1
-ARG CONFIGUREARGS=
+ARG DISTRIB_LABEL=p1
+ARG VERSION=3.7.0-${DISTRIB_LABEL}
+ARG CONFIGUREARGS=--distribution-label=${DISTRIB_LABEL} --development
 ARG EXTRASMODULES=
 ARG BUILD_DEPENDENCIES=
 
@@ -28,8 +29,7 @@ RUN git checkout $VERSION
 RUN { [ $(ls /src/modules/ | wc -l) -gt 0 ] && cp -r /src/modules/* /inspircd-src/src/modules/ || echo "No modules overwritten/added by repository"; }
 RUN echo $EXTRASMODULES | xargs --no-run-if-empty ./modulemanager install
 
-RUN ./configure --prefix /inspircd --uid 10000 --gid 10000
-RUN echo $CONFIGUREARGS | xargs --no-run-if-empty ./configure
+RUN echo $CONFIGUREARGS | xargs --no-run-if-empty ./configure --prefix /inspircd --uid 10000 --gid 10000
 RUN make -j`getconf _NPROCESSORS_ONLN` install
 
 ## Wipe out vanilla config; entrypoint.sh will handle repopulating it at runtime
@@ -50,7 +50,7 @@ COPY --from=builder --chown=inspircd:inspircd /inspircd/ /inspircd/
 
 USER inspircd
 
-EXPOSE 6667 6697 7000 7001
+EXPOSE 6667 6697 7000
 
 WORKDIR /
 ENTRYPOINT ["/entrypoint.sh"]
