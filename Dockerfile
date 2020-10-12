@@ -3,7 +3,7 @@ FROM alpine:3.11 as builder
 LABEL maintainer1="Adam <adam@anope.org>" \
       maintainer2="Sheogorath <sheogorath@shivering-isles.com>"
 
-ARG VERSION=insp3
+ARG VERSION=3.7.0-p1
 ARG CONFIGUREARGS=
 ARG EXTRASMODULES=
 ARG BUILD_DEPENDENCIES=
@@ -18,7 +18,7 @@ RUN apk add --no-cache gcc g++ make git pkgconfig perl \
 RUN addgroup -g 10000 -S inspircd
 RUN adduser -u 10000 -h /inspircd/ -D -S -G inspircd inspircd
 
-RUN git clone https://github.com/inspircd/inspircd.git inspircd-src
+RUN git clone https://github.com/EdmundOgban/inspircd.git inspircd-src
 
 WORKDIR /inspircd-src
 RUN git checkout $(git describe --abbrev=0 --tags $VERSION)
