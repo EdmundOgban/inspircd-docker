@@ -22,7 +22,7 @@ RUN git clone https://github.com/EdmundOgban/inspircd.git inspircd-src
 
 WORKDIR /inspircd-src
 RUN git fetch origin $VERSION
-RUN git checkout $(git describe --abbrev=0 --tags $VERSION)
+RUN git checkout $VERSION
 
 ## Add modules
 RUN { [ $(ls /src/modules/ | wc -l) -gt 0 ] && cp -r /src/modules/* /inspircd-src/src/modules/ || echo "No modules overwritten/added by repository"; }
